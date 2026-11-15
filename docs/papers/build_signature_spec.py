@@ -42,13 +42,14 @@ RIGHT = 0.78 * inch
 TOP = 0.72 * inch
 BOTTOM = 0.64 * inch
 MEASURE = PAGE_W - LEFT - RIGHT
-DATED = "14 November 2026"
-RELEASE = "3"
+DATED = "15 November 2026"
+RELEASE = "4"
 # Newest revision last. Add a row for a later revision. Do not rewrite an earlier row.
 HISTORY = [
     ("1", "14 November 2026", "Initial release. The format name is radio-signatures. A file that phones through Fieldwatch 1.1.44 must read keeps the name fieldwatch-signatures."),
     ("2", "14 November 2026", "Section 26 names a project that writes and publishes a library, as well as a project that reads one."),
     ("3", "14 November 2026", "Comments and proposed profiles are invited at github.com/OffGridPete/radio-signature-interchange."),
+    ("4", "15 November 2026", "A shared file uses the suffix .rsi. The name before the suffix is the publisher's choice. The stock download for phones through Fieldwatch 1.1.44 stays fieldwatch-signatures-v2.json."),
 ]
 OUT = "docs/papers/Radio_Signature_Interchange.pdf"
 
@@ -268,7 +269,7 @@ def story():
         thick_rule(),
         P("Proposed by Off Grid Pete LLC", "meta"),
         P(DATED, "meta"),
-        P(f"Document RSI-1, Release {RELEASE}. Supersedes Release 2.", "meta"),
+        P(f"Document RSI-1, Release {RELEASE}. Supersedes Release 3.", "meta"),
         Spacer(1, 6),
         P("Introduction", "h1"),
         P(
@@ -455,6 +456,18 @@ def story():
         P("6.  File format", "h1"),
         P(
             "A file is one JSON object. A conforming parser MUST accept the members in this section. A writer MUST emit UTF-8 JSON. A writer SHOULD emit <font face='Courier' size='9'>format</font> and <font face='Courier' size='9'>formatVersion</font>. Integers MUST be within the range that can be represented exactly in IEEE 754 binary64, which covers every field in this document.",
+            "body",
+        ),
+        P(
+            "The name of the file is not part of the match, and it is not the <font face='Courier' size='9'>format</font> string. A writer SHOULD end the name with <font face='Courier' size='9'>.rsi</font>. The characters before that suffix are the publisher's choice. This specification does not require a particular name. One publisher may use <font face='Courier' size='9'>fieldwatch-signatures.rsi</font>. Another may use any other name that ends in <font face='Courier' size='9'>.rsi</font>.",
+            "body",
+        ),
+        P(
+            "A reader MUST decide that a file is one of these libraries by the <font face='Courier' size='9'>format</font> member, not by the file name. When a person imports a library, a reader SHOULD offer files whose names end in <font face='Courier' size='9'>.rsi</font>. A reader SHOULD also accept a file whose name ends in <font face='Courier' size='9'>.json</font>, because libraries already in use use that suffix.",
+            "body",
+        ),
+        P(
+            "Phones through Fieldwatch 1.1.44 download one file by the address <font face='Courier' size='9'>fieldwatch-signatures-v2.json</font>. That address stays. Files people pass to each other use <font face='Courier' size='9'>.rsi</font>.",
             "body",
         ),
         P("6.1  Top-level members", "h2"),
@@ -878,7 +891,7 @@ def story():
     ]
     flow += bullets([
         "Fieldwatch 1.2.0 adds the conforming parser in section 5.3. Behavior on a baseline file stays the same for every stock signature that exists at Release 1.",
-        "The stock file those phones download stays <font face='Courier' size='9'>format</font> <font face='Courier' size='9'>fieldwatch-signatures</font> and <font face='Courier' size='9'>formatVersion</font> 1. It uses no radio token other than <font face='Courier' size='9'>BLE</font>, <font face='Courier' size='9'>WIFI</font>, or null. A file written for other readers uses <font face='Courier' size='9'>radio-signatures</font>.",
+        "The stock file those phones download stays <font face='Courier' size='9'>format</font> <font face='Courier' size='9'>fieldwatch-signatures</font> and <font face='Courier' size='9'>formatVersion</font> 1, at the address <font face='Courier' size='9'>fieldwatch-signatures-v2.json</font>. It uses no radio token other than <font face='Courier' size='9'>BLE</font>, <font face='Courier' size='9'>WIFI</font>, or null. A file written for other readers uses <font face='Courier' size='9'>radio-signatures</font> and the suffix <font face='Courier' size='9'>.rsi</font>. An export from this release uses that suffix. Import offers <font face='Courier' size='9'>.rsi</font> and still accepts <font face='Courier' size='9'>.json</font>.",
         "Each stock signature gains <font face='Courier' size='9'>publisher</font> <font face='Courier' size='9'>fieldwatch</font>. Ids are unchanged. The catalog number increases in that same release, so a phone whose parser can store the field will apply it. The field is omitted when empty, so custom signatures without a publisher stay that way.",
         "A phone that updates from an older app version treats a stored row with no publisher and a file row with publisher <font face='Courier' size='9'>fieldwatch</font> as the same signature when the ids are equal. Mute and extra rules remain.",
         "The public file does not contain a rule kind, class, radio, or decode type that 1.1.44 does not know. Those phones still update. The conforming parser implements the unknown-radio rule in section 5.3, so a later file from another project can name a radio this phone does not match without being rejected.",
