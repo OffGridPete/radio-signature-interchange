@@ -4,7 +4,7 @@ A proposal for a shared file of radio signatures. An app can recognize the radio
 
 This is a proposal for comment. It is not an adopted standard.
 
-The current document is RSI-1, Release 4, 15 November 2026: [Radio signature interchange](docs/papers/Radio_Signature_Interchange.pdf). A shared library uses the suffix `.rsi`. The name before that suffix is up to the publisher.
+The current document is RSI-1, revision 1.0.0, 15 November 2026: [Radio signature interchange](docs/papers/Radio_Signature_Interchange.pdf). The file is JSON. The extension `.rsi` shows that it conforms to this specification. Fieldwatch keeps the name `fieldwatch-signatures`. Another app uses its own name followed by `-signatures`, with the same extension.
 
 Fieldwatch is the first implementation. Releases through 1.1.44 already read a library close to this file. Fieldwatch 1.2.0 is the release that will conform. Fieldwatch™ is a trademark of Off Grid Pete LLC. Registration pending.
 

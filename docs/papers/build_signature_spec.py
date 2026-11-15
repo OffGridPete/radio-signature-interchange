@@ -43,13 +43,10 @@ TOP = 0.72 * inch
 BOTTOM = 0.64 * inch
 MEASURE = PAGE_W - LEFT - RIGHT
 DATED = "15 November 2026"
-RELEASE = "4"
+RELEASE = "1.0.0"
 # Newest revision last. Add a row for a later revision. Do not rewrite an earlier row.
 HISTORY = [
-    ("1", "14 November 2026", "Initial release. The format name is radio-signatures. A file that phones through Fieldwatch 1.1.44 must read keeps the name fieldwatch-signatures."),
-    ("2", "14 November 2026", "Section 26 names a project that writes and publishes a library, as well as a project that reads one."),
-    ("3", "14 November 2026", "Comments and proposed profiles are invited at github.com/OffGridPete/radio-signature-interchange."),
-    ("4", "15 November 2026", "A shared file uses the suffix .rsi. The name before the suffix is the publisher's choice. The stock download for phones through Fieldwatch 1.1.44 stays fieldwatch-signatures-v2.json."),
+    ("1.0.0", "15 November 2026", "Initial release."),
 ]
 OUT = "docs/papers/Radio_Signature_Interchange.pdf"
 
@@ -227,14 +224,14 @@ class SpecTemplate(PageTemplate):
         canvas.drawString(LEFT, y_head + 5, "RADIO SIGNATURES")
         canvas.setFillColor(MUTED)
         canvas.setFont("Times-Italic", 8)
-        canvas.drawRightString(PAGE_W - RIGHT, y_head + 5, f"RSI-1  ·  Release {RELEASE}")
+        canvas.drawRightString(PAGE_W - RIGHT, y_head + 5, f"RSI-1  ·  {RELEASE}")
         y_foot = 0.34 * inch
         canvas.setStrokeColor(RULE)
         canvas.setLineWidth(0.4)
         canvas.line(LEFT, y_foot + 12, PAGE_W - RIGHT, y_foot + 12)
         canvas.setFillColor(MUTED)
         canvas.setFont("Times-Roman", 8)
-        canvas.drawString(LEFT, y_foot, f"Off Grid Pete LLC  ·  Release {RELEASE}  ·  {DATED}")
+        canvas.drawString(LEFT, y_foot, f"Off Grid Pete LLC  ·  {RELEASE}  ·  {DATED}")
         canvas.drawRightString(PAGE_W - RIGHT, y_foot, str(page))
         canvas.restoreState()
 
@@ -243,7 +240,7 @@ def build(story):
     doc = BaseDocTemplate(
         OUT,
         pagesize=letter,
-        title=f"Radio Signature Interchange, RSI-1 Release {RELEASE}",
+        title=f"Radio Signature Interchange, RSI-1 {RELEASE}",
         author="Off Grid Pete LLC",
         subject="Proposed specification for a shared radio signature file",
         creator="Off Grid Pete LLC",
@@ -269,7 +266,7 @@ def story():
         thick_rule(),
         P("Proposed by Off Grid Pete LLC", "meta"),
         P(DATED, "meta"),
-        P(f"Document RSI-1, Release {RELEASE}. Supersedes Release 3.", "meta"),
+        P(f"Document RSI-1, revision {RELEASE}.", "meta"),
         Spacer(1, 6),
         P("Introduction", "h1"),
         P(
@@ -300,7 +297,7 @@ def story():
             "body",
         ),
         P(
-            "The format name in this specification is <font face='Courier' size='9'>radio-signatures</font>. A file written for this specification uses that name. <font face='Courier' size='9'>fieldwatch-signatures</font> is the name of the library already on phones through Fieldwatch 1.1.44. Those phones accept that name, with <font face='Courier' size='9'>formatVersion</font> 1, and they reject any other format string. A file those phones must read keeps the older name. Catalog 113, the stock file current with this proposal, stays that way so those phones can still update. A later <font face='Courier' size='9'>formatVersion</font> uses <font face='Courier' size='9'>radio-signatures</font> and does not take a Fieldwatch name.",
+            "What shows that a file conforms to this specification is the extension <font face='Courier' size='9'>.rsi</font>. The name in front of that extension does not. The contents of the file are JSON. Fieldwatch continues to call its library <font face='Courier' size='9'>fieldwatch-signatures</font>, and the change is the extension, so that file is <font face='Courier' size='9'>fieldwatch-signatures.rsi</font>. Another app uses its own name in the same way, followed by <font face='Courier' size='9'>-signatures</font>, and the same extension <font face='Courier' size='9'>.rsi</font>. Section 6 states this.",
             "body",
         ),
         P(
@@ -393,7 +390,7 @@ def story():
     flow += [
         P("5.  Parsers", "h1"),
         P(
-            "A parser is the program that reads the JSON and decides which signatures match an observation. The file format and the parser are specified together because a file that is safe for one parser can be unreadable to another. Fieldwatch releases through 1.1.44 already have a parser in the field, and that parser is close to this proposal. This proposal does not change that parser. It defines the parser Fieldwatch 1.2.0 will use, and it constrains future files so the parser already installed keeps working.",
+            "A parser is the program that reads the JSON and decides which signatures match an observation. The file format and the parser are specified together because a file that is safe for one parser can be unreadable to another. This specification defines the conforming parser. An older parser is already in use, and section 5.2 describes it. Future files are constrained so that parser keeps working. Fieldwatch is the first implementation. Its releases through 1.1.44 are that older parser, and Fieldwatch 1.2.0 is the release that will conform.",
             "body",
         ),
         P("5.1  What every parser already has in common", "h2"),
@@ -407,12 +404,13 @@ def story():
         ),
         P("5.2  The baseline parser", "h2"),
         P(
-            "The baseline parser is informative. It is the parser in Fieldwatch releases through 1.1.44, and it is the reason the public catalog cannot yet contain every idea in this proposal.",
+            "The baseline parser is informative. It is the parser in Fieldwatch releases through 1.1.44, and it is the reason the public Fieldwatch catalog cannot yet contain every idea in this proposal.",
             "body",
         ),
     ]
     flow += bullets([
         "It accepts <font face='Courier' size='9'>formatVersion</font> 1. If <font face='Courier' size='9'>formatVersion</font> is greater than 1, it rejects the whole file and asks for a newer app. It does not apply any signature from that file.",
+        "It accepts the <font face='Courier' size='9'>format</font> value <font face='Courier' size='9'>fieldwatch-signatures</font>, and the older alias <font face='Courier' size='9'>spectre-signatures</font>. It rejects any other value, including <font face='Courier' size='9'>radio-signatures</font>. A file those releases must read keeps <font face='Courier' size='9'>fieldwatch-signatures</font> and <font face='Courier' size='9'>formatVersion</font> 1.",
         "If a rule kind, a radio value, a signature class, or a decode type is a string the parser does not know, it rejects the whole file the same way. One unrecognized name on one signature is enough.",
         "If a decode source is a string it does not know, it drops that decode map and keeps the signature. Matching is unchanged. This is the one unknown name the baseline parser already softens.",
         "It identifies a signature by <font face='Courier' size='9'>id</font> alone. It does not store <font face='Courier' size='9'>publisher</font>.",
@@ -442,32 +440,28 @@ def story():
         ["If the file will be read by", "The file MUST"],
         [
             ["A baseline parser, including Fieldwatch 1.1.44", "Stay a baseline file: formatVersion 1, and only names from Appendix B. It MAY add object members those parsers will ignore, including publisher."],
-            ["Only conforming parsers", "Use format radio-signatures. Use formatVersion 1 for any addition that an older match would still get right by ignoring the new member. Raise formatVersion only for a change described in section 7. A formatVersion greater than 1 uses radio-signatures."],
+            ["Only conforming parsers", "Set the format member to radio-signatures. That value is not the file's name. Use formatVersion 1 for any addition that an older match would still get right by ignoring the new member. Raise formatVersion only for a change described in section 7. A formatVersion greater than 1 uses radio-signatures."],
         ],
         [2.15 * inch, MEASURE - 2.15 * inch],
     ))
     flow.append(Spacer(1, 8))
     flow.append(callout(
-        "Why the public catalog stays on format 1",
+        "Why the Fieldwatch catalog stays on format 1",
         "The stock file at fieldwatch-signatures-v2.json is what current phones download. A formatVersion above 1, or one rule kind or radio token those phones do not know, makes Update stock catalog refuse the entire file. New members that those phones ignore are safe to add only in a release whose parser stores them. Until that release is the one on the phone, a catalog number spent on an ignored field is stored, and a later file with the same number is skipped. Section 23 is the order that avoids that.",
     ))
 
     flow += [
         P("6.  File format", "h1"),
         P(
-            "A file is one JSON object. A conforming parser MUST accept the members in this section. A writer MUST emit UTF-8 JSON. A writer SHOULD emit <font face='Courier' size='9'>format</font> and <font face='Courier' size='9'>formatVersion</font>. Integers MUST be within the range that can be represented exactly in IEEE 754 binary64, which covers every field in this document.",
+            "The file is one JSON object, as RFC 8259 defines it, encoded in UTF-8. The extension <font face='Courier' size='9'>.rsi</font> shows that the file conforms to this specification. A conforming parser MUST accept the members in this section. A writer MUST emit that JSON. A writer SHOULD emit <font face='Courier' size='9'>format</font> and <font face='Courier' size='9'>formatVersion</font>. Integers MUST be within the range that can be represented exactly in IEEE 754 binary64, which covers every field in this document.",
             "body",
         ),
         P(
-            "The name of the file is not part of the match, and it is not the <font face='Courier' size='9'>format</font> string. A writer SHOULD end the name with <font face='Courier' size='9'>.rsi</font>. The characters before that suffix are the publisher's choice. This specification does not require a particular name. One publisher may use <font face='Courier' size='9'>fieldwatch-signatures.rsi</font>. Another may use any other name that ends in <font face='Courier' size='9'>.rsi</font>.",
+            "A writer SHOULD end the file with the extension <font face='Courier' size='9'>.rsi</font>. That extension is the part that matters. The name before it is not part of the match, and this specification does not require a particular name. An application uses its own name, followed by <font face='Courier' size='9'>-signatures</font>, with that extension.",
             "body",
         ),
         P(
-            "A reader MUST decide that a file is one of these libraries by the <font face='Courier' size='9'>format</font> member, not by the file name. When a person imports a library, a reader SHOULD offer files whose names end in <font face='Courier' size='9'>.rsi</font>. A reader SHOULD also accept a file whose name ends in <font face='Courier' size='9'>.json</font>, because libraries already in use use that suffix.",
-            "body",
-        ),
-        P(
-            "Phones through Fieldwatch 1.1.44 download one file by the address <font face='Courier' size='9'>fieldwatch-signatures-v2.json</font>. That address stays. Files people pass to each other use <font face='Courier' size='9'>.rsi</font>.",
+            "When a person imports a library, a reader SHOULD offer files that end in <font face='Courier' size='9'>.rsi</font>, because that extension shows this kind of file. A reader MUST decide that the contents are one of these libraries by the <font face='Courier' size='9'>format</font> member inside the JSON. Accepting a name that ends in <font face='Courier' size='9'>.json</font> is not a requirement of this specification. Section 23 records that choice for the first implementation.",
             "body",
         ),
         P("6.1  Top-level members", "h2"),
@@ -475,13 +469,13 @@ def story():
     flow.append(table(
         ["Member", "Requirement"],
         [
-            ["`format", "String. The name of this format is radio-signatures. A file written for this specification MUST use that name. A conforming parser MUST accept radio-signatures and fieldwatch-signatures. A file that a Fieldwatch parser through 1.1.44 must read MUST be fieldwatch-signatures with formatVersion 1. Those parsers reject any other format string. A Fieldwatch parser also accepts the historical name spectre-signatures. Other parsers MAY reject that name. A formatVersion greater than 1 MUST use radio-signatures."],
+            ["`format", "String. This member identifies the contents. It is not the file's name. A file written to this specification uses radio-signatures. A conforming parser MUST accept that value. The first implementation's existing files use fieldwatch-signatures, and a parser SHOULD accept that value so those files still open. spectre-signatures is an older alias of that same implementation, and a parser MAY reject it. A formatVersion greater than 1 MUST use radio-signatures. Section 5.2 is what the older parser accepts."],
             ["`formatVersion", "Integer. MUST be 1 or greater. The baseline and this proposal's additions are version 1. Absent means 1."],
             ["`catalogVersion", "Integer. Optional. Identifies one publisher's snapshot of a stock catalog. It is not a schema version. Absent means 0. A consumer MUST NOT interpret it as formatVersion."],
             ["`exportedAt", "String. Optional. When the file was written, for humans. Not used in matching."],
             ["`appVersion", "String. Optional. The application that wrote the file. Not used in matching."],
             ["`publisher", "String. Optional. The publisher of this file as a whole, using the token in section 8. A signature may name a different publisher."],
-            ["`fleets", "Array of signature objects. The name fleets is historical and is retained so existing files parse. The array MUST be present. An empty array is a valid file with nothing to match."],
+            ["`fleets", "Array of signature objects. The name comes from the first implementation and is retained so existing files parse. The array MUST be present. An empty array is a valid file with nothing to match."],
         ],
         w_rule,
     ))
@@ -496,7 +490,7 @@ def story():
     flow.append(table(
         ["Member", "Requirement"],
         [
-            ["`id", "String. REQUIRED. Stable key assigned by the publisher. MUST be non-empty. MUST NOT change for a published signature. The Fieldwatch stock ids in use today remain the ids."],
+            ["`id", "String. REQUIRED. Stable key assigned by the publisher. MUST be non-empty. MUST NOT change for a published signature."],
             ["`publisher", "String. Optional. Token from section 8. Absent means unspecified."],
             ["`name", "String. REQUIRED. Human label. Not used in matching."],
             ["`rules", "Array of rule objects. REQUIRED. The array may be empty only for a group signature under section 18. Otherwise an empty rules array matches nothing."],
@@ -526,7 +520,7 @@ def story():
     flow += [
         P("7.  Versions and compatibility", "h1"),
         P(
-            "Two integers travel in the file, and they answer different questions. <font face='Courier' size='9'>formatVersion</font> is the schema. <font face='Courier' size='9'>catalogVersion</font> is one publisher's revision of the signatures inside a stock file. Fieldwatch catalog 113 and formatVersion 1 are both current as of this proposal. Another publisher uses its own catalog number and the same format version.",
+            "Two integers travel in the file, and they answer different questions. <font face='Courier' size='9'>formatVersion</font> is the schema. <font face='Courier' size='9'>catalogVersion</font> is one publisher's revision of the signatures inside a stock file. <font face='Courier' size='9'>formatVersion</font> 1 is current as of this proposal. A publisher's own catalog number is not a schema version. Another publisher uses its own number and the same format version.",
             "body",
         ),
         P("A change falls into one of three classes.", "body"),
@@ -868,7 +862,7 @@ def story():
     ]
     flow += bullets([
         "<b>Core matcher.</b> Given a baseline file and an observation on BLE or WIFI, it reports the same matching signature ids as sections 10 through 16. It may ignore group signatures, decode, application members, and any radio profile it does not implement.",
-        "<b>Conforming parser.</b> It meets section 5.3, reads and writes the file in section 6, and includes a core matcher. If it stores catalogs, it preserves section 19 and identity in section 8. It MUST accept <font face='Courier' size='9'>fieldwatch-signatures</font> and <font face='Courier' size='9'>radio-signatures</font>.",
+        "<b>Conforming parser.</b> It meets section 5.3, reads and writes the file in section 6, and includes a core matcher. If it stores catalogs, it preserves section 19 and identity in section 8. It MUST accept <font face='Courier' size='9'>radio-signatures</font>. It SHOULD accept <font face='Courier' size='9'>fieldwatch-signatures</font> so it can read the first implementation's existing files.",
         "<b>Group profile.</b> It implements section 18 in addition to the core.",
         "<b>Decode profile.</b> It implements section 20. Failures inside a decode MUST NOT remove a match the rules produced.",
         "<b>Additional radio profile.</b> OPTIONAL. It implements one radio token registered under section 17, and it states which token. A product that does not implement the token leaves those rules unmatched, as section 5.3 requires. Fieldwatch claims the BLE and Wi-Fi profiles only.",
@@ -890,8 +884,8 @@ def story():
         ),
     ]
     flow += bullets([
-        "Fieldwatch 1.2.0 adds the conforming parser in section 5.3. Behavior on a baseline file stays the same for every stock signature that exists at Release 1.",
-        "The stock file those phones download stays <font face='Courier' size='9'>format</font> <font face='Courier' size='9'>fieldwatch-signatures</font> and <font face='Courier' size='9'>formatVersion</font> 1, at the address <font face='Courier' size='9'>fieldwatch-signatures-v2.json</font>. It uses no radio token other than <font face='Courier' size='9'>BLE</font>, <font face='Courier' size='9'>WIFI</font>, or null. A file written for other readers uses <font face='Courier' size='9'>radio-signatures</font> and the suffix <font face='Courier' size='9'>.rsi</font>. An export from this release uses that suffix. Import offers <font face='Courier' size='9'>.rsi</font> and still accepts <font face='Courier' size='9'>.json</font>.",
+        "Fieldwatch 1.2.0 adds the conforming parser in section 5.3. Behavior on a baseline file stays the same for every stock signature that exists at revision 1.0.0.",
+        "The stock file those phones download stays <font face='Courier' size='9'>format</font> <font face='Courier' size='9'>fieldwatch-signatures</font> and <font face='Courier' size='9'>formatVersion</font> 1, at the address <font face='Courier' size='9'>fieldwatch-signatures-v2.json</font>. It uses no radio token other than <font face='Courier' size='9'>BLE</font>, <font face='Courier' size='9'>WIFI</font>, or null. Fieldwatch keeps the name <font face='Courier' size='9'>fieldwatch-signatures</font>. The change is the extension <font face='Courier' size='9'>.rsi</font>, so an export from this release is <font face='Courier' size='9'>fieldwatch-signatures.rsi</font>. Fieldwatch import offers <font face='Courier' size='9'>.rsi</font> and still accepts <font face='Courier' size='9'>.json</font>, so an export made before this release still opens. Other readers are not required to accept <font face='Courier' size='9'>.json</font>.",
         "Each stock signature gains <font face='Courier' size='9'>publisher</font> <font face='Courier' size='9'>fieldwatch</font>. Ids are unchanged. The catalog number increases in that same release, so a phone whose parser can store the field will apply it. The field is omitted when empty, so custom signatures without a publisher stay that way.",
         "A phone that updates from an older app version treats a stored row with no publisher and a file row with publisher <font face='Courier' size='9'>fieldwatch</font> as the same signature when the ids are equal. Mute and extra rules remain.",
         "The public file does not contain a rule kind, class, radio, or decode type that 1.1.44 does not know. Those phones still update. The conforming parser implements the unknown-radio rule in section 5.3, so a later file from another project can name a radio this phone does not match without being rejected.",
@@ -919,7 +913,7 @@ def story():
 
         P("25.  Examples", "h1"),
         P(
-            "A baseline file. The format name here is <font face='Courier' size='9'>fieldwatch-signatures</font> so a Fieldwatch 1.1.44 parser can read it. A file written for this specification uses <font face='Courier' size='9'>radio-signatures</font>. Both parsers match a Bluetooth advertisement named TD-H9-0536, and both refuse a Wi-Fi network of that name because the rule sets the radio.",
+            "A baseline file. The <font face='Courier' size='9'>format</font> member here is <font face='Courier' size='9'>fieldwatch-signatures</font> so a Fieldwatch 1.1.44 parser can read it. A file written for this specification sets that member to <font face='Courier' size='9'>radio-signatures</font>. The file's name is separate, and section 6 describes it. Both parsers match a Bluetooth advertisement named TD-H9-0536, and both refuse a Wi-Fi network of that name because the rule sets the radio.",
             "body",
         ),
     ]
@@ -976,7 +970,7 @@ def story():
         "body",
     ))
     flow.append(P(
-        "A signature for a radio Fieldwatch does not hear. The rule sets <font face='Courier' size='9'>radio</font>, so an omitted-radio name of the same text does not match this observation. A parser with no Classic profile does not match the signature. The file uses <font face='Courier' size='9'>format</font> <font face='Courier' size='9'>radio-signatures</font>, which is the name in this specification. It is not a baseline file, and a 1.1.44 parser would reject it. The Classic profile itself is not defined here.",
+        "A signature for a radio Fieldwatch does not hear. The rule sets <font face='Courier' size='9'>radio</font>, so an omitted-radio name of the same text does not match this observation. A parser with no Classic profile does not match the signature. The file sets <font face='Courier' size='9'>format</font> to <font face='Courier' size='9'>radio-signatures</font>, which is the value in this specification and is not the file's name. It is not a baseline file, and a 1.1.44 parser would reject it. The Classic profile itself is not defined here.",
         "body",
     ))
     flow.append(code_block(
@@ -1062,7 +1056,7 @@ def story():
     flow += [
         P("Appendix B.  Baseline registry", "h1"),
         P(
-            "These are the names a baseline parser accepts. A file that uses only these names, with formatVersion 1, is a baseline file. The class list is the Fieldwatch set at Release 1, including values kept so older files still parse.",
+            "These are the names a baseline parser accepts. A file that uses only these names, with formatVersion 1, is a baseline file. The class list is the Fieldwatch set at revision 1.0.0, including values kept so older files still parse.",
             "body",
         ),
         P("Rule kinds. " + ", ".join([
@@ -1091,14 +1085,14 @@ def story():
         "T. Bray, The JavaScript Object Notation (JSON) Data Interchange Format, RFC 8259.",
         "IEEE, Guidelines for Use of Extended Unique Identifier (EUI), Organizationally Unique Identifier (OUI), and Company ID.",
         "Bluetooth Core Specification, Service UUID and the Bluetooth base UUID. Bluetooth SIG, Assigned Numbers, Company Identifiers.",
-        "Fieldwatch stock file fieldwatch-signatures, formatVersion 1, as published by Off Grid Pete LLC. Catalog 113 is the stock snapshot current with Release 1.",
+        "Fieldwatch stock file fieldwatch-signatures, formatVersion 1, as published by Off Grid Pete LLC. Catalog 113 is the stock snapshot current with revision 1.0.0.",
     ]
     for i, text in enumerate(refs, start=1):
         flow.append(Paragraph(f"{i}.  {esc(text)}", S["ref"]))
 
     flow.append(Spacer(1, 8))
     flow.append(P(
-        f"Comments and proposed profiles are invited at github.com/OffGridPete/radio-signature-interchange. Section 26 is how a project takes part. This document is RSI-1, Release {RELEASE}, {DATED}. Fieldwatch™ is a trademark of Off Grid Pete LLC. Registration pending.",
+        f"Comments and proposed profiles are invited at github.com/OffGridPete/radio-signature-interchange. Section 26 is how a project takes part. This document is RSI-1, revision {RELEASE}, {DATED}. Fieldwatch™ is a trademark of Off Grid Pete LLC. Registration pending.",
         "body",
     ))
     flow.append(Spacer(1, 8))
