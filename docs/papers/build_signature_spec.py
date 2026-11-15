@@ -43,11 +43,12 @@ TOP = 0.72 * inch
 BOTTOM = 0.64 * inch
 MEASURE = PAGE_W - LEFT - RIGHT
 DATED = "14 November 2026"
-RELEASE = "2"
+RELEASE = "3"
 # Newest revision last. Add a row for a later revision. Do not rewrite an earlier row.
 HISTORY = [
     ("1", "14 November 2026", "Initial release. The format name is radio-signatures. A file that phones through Fieldwatch 1.1.44 must read keeps the name fieldwatch-signatures."),
     ("2", "14 November 2026", "Section 26 names a project that writes and publishes a library, as well as a project that reads one."),
+    ("3", "14 November 2026", "Comments and proposed profiles are invited at github.com/OffGridPete/radio-signature-interchange."),
 ]
 OUT = "docs/papers/Radio_Signature_Interchange.pdf"
 
@@ -267,7 +268,7 @@ def story():
         thick_rule(),
         P("Proposed by Off Grid Pete LLC", "meta"),
         P(DATED, "meta"),
-        P(f"Document RSI-1, Release {RELEASE}. Supersedes Release 1.", "meta"),
+        P(f"Document RSI-1, Release {RELEASE}. Supersedes Release 2.", "meta"),
         Spacer(1, 6),
         P("Introduction", "h1"),
         P(
@@ -992,7 +993,7 @@ def story():
             "body",
         ),
         P(
-            "Comments and proposed profiles are invited at github.com/OffGridPete/Fieldwatch. A revision will name projects that contribute a profile. There is no fee and no separate organization in this proposal. If the set of implementers grows, a later revision can describe how changes are agreed. This revision does not create that body in advance.",
+            "Comments and proposed profiles are invited at github.com/OffGridPete/radio-signature-interchange. A revision will name projects that contribute a profile. There is no fee and no separate organization in this proposal. If the set of implementers grows, a later revision can describe how changes are agreed. This revision does not create that body in advance.",
             "body",
         ),
         P(
@@ -1084,7 +1085,7 @@ def story():
 
     flow.append(Spacer(1, 8))
     flow.append(P(
-        f"Comments and proposed profiles are invited at github.com/OffGridPete/Fieldwatch. Section 26 is how a project takes part. This document is RSI-1, Release {RELEASE}, {DATED}. Fieldwatch™ is a trademark of Off Grid Pete LLC. Registration pending.",
+        f"Comments and proposed profiles are invited at github.com/OffGridPete/radio-signature-interchange. Section 26 is how a project takes part. This document is RSI-1, Release {RELEASE}, {DATED}. Fieldwatch™ is a trademark of Off Grid Pete LLC. Registration pending.",
         "body",
     ))
     flow.append(Spacer(1, 8))
