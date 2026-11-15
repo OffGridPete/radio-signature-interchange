@@ -16,6 +16,16 @@ A project can also take part by implementing the matcher, or by writing and publ
 
 There is no fee and no separate organization.
 
+## Badge
+
+An app that reads or writes a `radio-signatures` file for RSI-1 may show this badge. The badge is that app's claim. This repository does not check it.
+
+![RSI-1 signatures supported](badges/RSI.svg)
+
+```markdown
+[![RSI-1 signatures supported](https://raw.githubusercontent.com/OffGridPete/radio-signature-interchange/main/badges/RSI.svg)](https://github.com/OffGridPete/radio-signature-interchange)
+```
+
 ## Building the PDF
 
 From the repository root, with Python 3 and reportlab:
